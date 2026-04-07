@@ -53,6 +53,21 @@ function initApp() {
   // 初始化连连看游戏
   LinkGame.init();
   
+  // 初始化垃圾分类百科
+  if (typeof GarbageEncyclopedia !== 'undefined') {
+    GarbageEncyclopedia.init();
+  }
+  
+  // 初始化垃圾分类游戏
+  if (typeof GarbageGame !== 'undefined') {
+    GarbageGame.init();
+  }
+  
+  // 从 EPUB 中更新垃圾分类数据
+  if (typeof EpubParser !== 'undefined') {
+    EpubParser.updateGarbageData();
+  }
+  
   // 检查是否有当前旅行家
   const currentTraveler = getCurrentTraveler();
   
@@ -769,6 +784,7 @@ function renderCultureSections(countryId) {
   
   // 板块顺序和类型映射
   const sectionTypes = [
+    { key: 'attractions', class: 'attractions' },
     { key: 'history', class: 'history' },
     { key: 'food', class: 'food' },
     { key: 'festival', class: 'festival' },
@@ -1316,7 +1332,9 @@ const GAME_CENTER_GAMES = [
   { id: 'tap', name: '天梯挑战', icon: '🎯', desc: '国旗识别', action: () => TapGame.startChallenge() },
   { id: 'puzzle', name: '拼图挑战', icon: '🧩', desc: '国旗拼图', action: () => PuzzleGame.startChallenge() },
   { id: 'match', name: '翻牌配对', icon: '🃏', desc: '记忆配对', action: () => MatchGame.showDifficultySelect() },
-  { id: 'link', name: '连连看', icon: '🔗', desc: '连接消除', action: () => LinkGame.showDifficultySelect() }
+  { id: 'link', name: '连连看', icon: '🔗', desc: '连接消除', action: () => LinkGame.showDifficultySelect() },
+  { id: 'garbage', name: '垃圾分类', icon: '🗑️', desc: '垃圾识别', action: () => window.location.href = 'garbage-game.html' },
+  { id: 'garbage-encyclopedia', name: '垃圾大百科', icon: '📚', desc: '垃圾分类知识', action: () => window.location.href = 'garbage-encyclopedia.html' }
 ];
 
 // 打开游戏中心

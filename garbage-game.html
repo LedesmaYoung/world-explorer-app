@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>垃圾分类游戏 - 世界环球旅行家</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/games.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .game-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .page-header {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .page-header h1 {
+      margin: 0 0 10px 0;
+      color: #333;
+      font-size: 28px;
+    }
+    
+    .page-header p {
+      margin: 0;
+      color: #666;
+      font-size: 16px;
+    }
+    
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      margin-bottom: 20px;
+      transition: background 0.3s ease;
+    }
+    
+    .back-btn:hover {
+      background: #45a049;
+    }
+    
+    .difficulty-select {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .difficulty-option {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .difficulty-option:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .difficulty-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .difficulty-info {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .game-container {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .game-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .stat {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .garbage-items-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 10px;
+    }
+    
+    .garbage-item {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: grab;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .garbage-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .garbage-item.dragging {
+      opacity: 0.5;
+      transform: scale(1.1);
+    }
+    
+    .garbage-item-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    
+    .garbage-item-name {
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .garbage-bins {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    
+    .garbage-bin {
+      border: 3px dashed #ccc;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    
+    .garbage-bin.hover {
+      border-style: solid;
+      transform: scale(1.02);
+    }
+    
+    .garbage-bin-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    
+    .garbage-bin-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    
+    .garbage-bin-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-top: 15px;
+    }
+    
+    .garbage-bin-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    
+    .game-message {
+      text-align: center;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .game-message.correct {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .game-message.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .result-container {
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .result-message {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+    
+    .result-score {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    
+    .result-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .play-again-btn, .back-btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 25px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .play-again-btn {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .play-again-btn:hover {
+      background: #45a049;
+    }
+    
+    .back-btn {
+      background: #f1f1f1;
+      color: #333;
+    }
+    
+    .back-btn:hover {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-page">
+    <a href="index.html" class="back-btn">← 返回首页</a>
+    
+    <div class="page-header">
+      <h1>🎮 垃圾分类游戏</h1>
+      <p>学习垃圾分类知识，保护环境从我做起</p>
+    </div>
+    
+    <div id="difficulty-select" class="difficulty-select">
+      <!-- 难度选择将在这里动态生成 -->
+    </div>
+    
+    <div id="game-container" class="game-container" style="display: none;">
+      <div class="game-stats">
+        <div class="stat">得分: <span id="score">0</span></div>
+        <div class="stat">时间: <span id="time">0</span>秒</div>
+        <div class="stat">剩余: <span id="remaining">0</span> 个</div>
+      </div>
+      
+      <div class="garbage-items-container" id="garbage-items-container">
+        <!-- 垃圾物品将在这里动态生成 -->
+      </div>
+      
+      <div class="garbage-bins" id="garbage-bins">
+        <!-- 垃圾桶将在这里动态生成 -->
+      </div>
+      
+      <div class="game-message" id="game-message"></div>
+    </div>
+    
+    <div id="result-container" class="result-container" style="display: none;">
+      <div class="result-message" id="result-message"></div>
+      <div class="result-score">最终得分: <span id="final-score">0</span></div>
+      <div class="result-buttons">
+        <button class="play-again-btn" onclick="startGame()">再玩一次</button>
+        <a href="index.html" class="back-btn">返回首页</a>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    let gameGarbageData = null;
+    let currentItems = [];
+    let score = 0;
+    let timeLeft = 0;
+    let timer = null;
+    let currentDifficulty = null;
+    
+    const difficulties = {
+      easy: { name: '简单', itemCount: 6, timeLimit: 60, scorePerItem: 10 },
+      medium: { name: '中等', itemCount: 10, timeLimit: 90, scorePerItem: 15 },
+      hard: { name: '困难', itemCount: 14, timeLimit: 120, scorePerItem: 20 }
+    };
+    
+    async function loadGarbageData() {
+      try {
+        const response = await fetch('data/garbage/garbage-data.json');
+        gameGarbageData = await response.json();
+        renderDifficultySelect();
+      } catch (error) {
+        console.error('加载垃圾分类数据失败:', error);
+      }
+    }
+    
+    function renderDifficultySelect() {
+      const container = document.getElementById('difficulty-select');
+      container.innerHTML = '';
+      
+      for (const [key, config] of Object.entries(difficulties)) {
+        const option = document.createElement('div');
+        option.className = 'difficulty-option';
+        option.onclick = () => selectDifficulty(key);
+        
+        option.innerHTML = `
+          <div class="difficulty-name">${config.name}</div>
+          <div class="difficulty-info">物品数量: ${config.itemCount}</div>
+          <div class="difficulty-info">时间限制: ${config.timeLimit}秒</div>
+          <div class="difficulty-info">每题得分: ${config.scorePerItem}</div>
+        `;
+        
+        container.appendChild(option);
+      }
+    }
+    
+    function selectDifficulty(difficulty) {
+      currentDifficulty = difficulties[difficulty];
+      document.getElementById('difficulty-select').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+      startGame();
+    }
+    
+    function startGame() {
+      document.getElementById('result-container').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+      
+      score = 0;
+      timeLeft = currentDifficulty.timeLimit;
+      currentItems = [];
+      
+      // 随机选择物品
+      const shuffled = [...gameGarbageData.items].sort(() => 0.5 - Math.random());
+      currentItems = shuffled.slice(0, currentDifficulty.itemCount);
+      
+      renderGame();
+      startTimer();
+    }
+    
+    function renderGame() {
+      document.getElementById('score').textContent = score;
+      document.getElementById('time').textContent = timeLeft;
+      document.getElementById('remaining').textContent = currentItems.length;
+      
+      renderItems();
+      renderBins();
+    }
+    
+    function renderItems() {
+      const container = document.getElementById('garbage-items-container');
+      container.innerHTML = '';
+      
+      for (const item of currentItems) {
+        const div = document.createElement('div');
+        div.className = 'garbage-item';
+        div.draggable = true;
+        div.dataset.type = item.type;
+        div.dataset.id = item.id;
+        
+        div.innerHTML = `
+          <div class="garbage-item-icon">${item.icon}</div>
+          <div class="garbage-item-name">${item.name}</div>
+        `;
+        
+        div.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', item.type);
+          e.dataTransfer.setData('text/id', item.id);
+          div.classList.add('dragging');
+        });
+        
+        div.addEventListener('dragend', () => {
+          div.classList.remove('dragging');
+        });
+        
+        container.appendChild(div);
+      }
+    }
+    
+    function renderBins() {
+      const container = document.getElementById('garbage-bins');
+      container.innerHTML = '';
+      
+      const binOrder = ['hazardous', 'kitchen', 'recyclable', 'other'];
+      
+      for (const type of binOrder) {
+        const info = gameGarbageData.types[type];
+        const bin = document.createElement('div');
+        bin.className = 'garbage-bin';
+        bin.style.borderColor = info.color;
+        bin.dataset.type = type;
+        
+        bin.innerHTML = `
+          <div class="garbage-bin-icon" style="background-color: ${info.color}">${info.icon}</div>
+          <div class="garbage-bin-name">${info.name}</div>
+          <div class="garbage-bin-items"></div>
+        `;
+        
+        bin.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          bin.classList.add('hover');
+        });
+        
+        bin.addEventListener('dragleave', () => {
+          bin.classList.remove('hover');
+        });
+        
+        bin.addEventListener('drop', (e) => {
+          e.preventDefault();
+          bin.classList.remove('hover');
+          
+          const itemType = e.dataTransfer.getData('text/plain');
+          const itemId = e.dataTransfer.getData('text/id');
+          
+          checkAnswer(itemType, type, itemId, bin);
+        });
+        
+        container.appendChild(bin);
+      }
+    }
+    
+    function checkAnswer(itemType, binType, itemId, bin) {
+      const isCorrect = itemType === binType;
+      const messageDiv = document.getElementById('game-message');
+      
+      if (isCorrect) {
+        score += currentDifficulty.scorePerItem;
+        document.getElementById('score').textContent = score;
+        
+        // 移除物品
+        const itemElement = document.querySelector(`.garbage-item[data-id="${itemId}"]`);
+        if (itemElement) {
+          const item = currentItems.find(i => i.id === itemId);
+          itemElement.remove();
+          
+          // 添加到垃圾桶
+          const itemsContainer = bin.querySelector('.garbage-bin-items');
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'garbage-bin-item';
+          itemDiv.innerHTML = `
+            <div>${item.icon}</div>
+            <div>${item.name}</div>
+          `;
+          itemsContainer.appendChild(itemDiv);
+          
+          currentItems = currentItems.filter(i => i.id !== itemId);
+          document.getElementById('remaining').textContent = currentItems.length;
+        }
+        
+        messageDiv.textContent = '✅ 分类正确！';
+        messageDiv.className = 'game-message correct';
+        
+        if (currentItems.length === 0) {
+          endGame(true);
+        }
+      } else {
+        messageDiv.textContent = '❌ 分类错误，再试一次！';
+        messageDiv.className = 'game-message error';
+      }
+      
+      setTimeout(() => {
+        messageDiv.textContent = '';
+        messageDiv.className = 'game-message';
+      }, 2000);
+    }
+    
+    function startTimer() {
+      if (timer) clearInterval(timer);
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time').textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+          endGame(false);
+        }
+      }, 1000);
+    }
+    
+    function endGame(completed) {
+      clearInterval(timer);
+      
+      document.getElementById('game-container').style.display = 'none';
+      document.getElementById('result-container').style.display = 'block';
+      
+      document.getElementById('result-message').textContent = completed ? '🎉 恭喜完成！' : '⏰ 时间到！';
+      document.getElementById('final-score').textContent = score;
+    }
+    
+    // 页面加载完成后执行
+    window.addEventListener('DOMContentLoaded', loadGarbageData);
+  </script>
+</body>
+</html>
