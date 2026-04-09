@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>垃圾分类百科 - 世界环球旅行家</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      margin-bottom: 20px;
+      transition: background 0.3s ease;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .back-btn:hover {
+      background: #45a049;
+    }
+    
+    .header {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      font-size: 16px;
+      color: #666;
+    }
+    
+    .types-view {
+      display: block;
+    }
+    
+    .items-view {
+      display: none;
+    }
+    
+    .types-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .type-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid #eee;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .type-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .type-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 50px;
+    }
+    
+    .type-icon-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    
+    .type-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .type-count {
+      font-size: 16px;
+      color: #666;
+    }
+    
+    .type-header {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .type-header-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+    
+    .type-header-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    
+    .type-header-info {
+      flex: 1;
+      max-width: calc(100% - 80px);
+    }
+    
+    .type-header-info h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .type-header-info p {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .item-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .item-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .item-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .item-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+    
+    .item-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .item-desc {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: white;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-btn">← 返回首页</a>
+    
+    <div class="header">
+      <h1>📚 垃圾分类百科</h1>
+      <p>了解垃圾分类知识，共建美好家园</p>
+    </div>
+    
+    <div class="types-view" id="types-view">
+      <div class="types-grid" id="types-grid">
+        <!-- 垃圾类型卡片将在这里动态生成 -->
+      </div>
+    </div>
+    
+    <div class="items-view" id="items-view">
+      <button class="back-btn" onclick="showTypes()">← 返回分类列表</button>
+      <div class="type-header" id="type-header"></div>
+      <div class="items-grid" id="items-grid"></div>
+    </div>
+  </div>
+  
+  <script>
+    let garbageData = null;
+    
+    const typeConfig = {
+      hazardous: {
+        name: '有害垃圾',
+        icon: '⚠️',
+        color: '#F94343',
+        desc: '含有对人体健康有害的重金属、有毒的物质或者对环境造成现实危害或者潜在危害的废弃物'
+      },
+      kitchen: {
+        name: '厨余垃圾',
+        icon: '🍎',
+        color: '#52C41A',
+        desc: '居民日常生活及食品加工、饮食服务、单位供餐等活动中产生的垃圾'
+      },
+      recyclable: {
+        name: '可回收物',
+        icon: '♻️',
+        color: '#4B9CD3',
+        desc: '适宜回收循环使用和资源利用的废物'
+      },
+      other: {
+        name: '其他垃圾',
+        icon: '🗑️',
+        color: '#9E9E9E',
+        desc: '除有害垃圾、厨余垃圾、可回收物以外的其他生活废弃物'
+      }
+    };
+    
+    async function loadData() {
+      try {
+        const response = await fetch('data/garbage/garbage-data.json');
+        garbageData = await response.json();
+        console.log('数据加载成功，物品数量:', garbageData.items.length);
+        
+        // 动态生成垃圾类型卡片
+        renderTypeCards();
+      } catch (error) {
+        console.error('数据加载失败:', error);
+      }
+    }
+    
+    function renderTypeCards() {
+      const typesGrid = document.getElementById('types-grid');
+      typesGrid.innerHTML = '';
+      
+      const typeOrder = ['hazardous', 'kitchen', 'recyclable', 'other'];
+      
+      typeOrder.forEach(type => {
+        const typeData = garbageData.types[type];
+        const config = typeConfig[type];
+        const items = garbageData.items.filter(item => item.type === type);
+        
+        const card = document.createElement('div');
+        card.className = 'type-card';
+        card.style.borderColor = config.color;
+        card.onclick = () => showItems(type);
+        
+        let iconHtml = '';
+        if (typeData.image) {
+          iconHtml = `<img class="type-icon-image" src="${typeData.image}" alt="${typeData.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                      <div class="type-icon" style="background-color: ${config.color}; display: none;">${config.icon}</div>`;
+        } else {
+          iconHtml = `<div class="type-icon" style="background-color: ${config.color};">${config.icon}</div>`;
+        }
+        
+        card.innerHTML = `
+          ${iconHtml}
+          <div class="type-name">${typeData.name}</div>
+          <div class="type-count">${items.length} 种物品</div>
+        `;
+        
+        typesGrid.appendChild(card);
+      });
+    }
+    
+    function showTypes() {
+      document.getElementById('types-view').style.display = 'block';
+      document.getElementById('items-view').style.display = 'none';
+    }
+    
+    function showItems(type) {
+      if (!garbageData) {
+        alert('数据正在加载，请稍后再试');
+        return;
+      }
+      
+      const config = typeConfig[type];
+      const typeData = garbageData.types[type];
+      const items = garbageData.items.filter(item => item.type === type);
+      
+      let iconHtml = '';
+      if (typeData.image) {
+        iconHtml = `<img class="type-header-image" src="${typeData.image}" alt="${typeData.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="type-header-icon" style="background-color: ${config.color}; display: none;">${config.icon}</div>`;
+      } else {
+        iconHtml = `<div class="type-header-icon" style="background-color: ${config.color};">${config.icon}</div>`;
+      }
+      
+      document.getElementById('type-header').innerHTML = `
+        ${iconHtml}
+        <div class="type-header-info">
+          <h2>${typeData.name}</h2>
+          <p>${typeData.desc}</p>
+          <p style="margin-top: 5px; font-weight: bold;">共 ${items.length} 种物品</p>
+        </div>
+      `;
+      
+      const itemsGrid = document.getElementById('items-grid');
+      itemsGrid.innerHTML = '';
+      
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        
+        if (item.image) {
+          card.innerHTML = `
+            <img class="item-image" src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="item-icon" style="display: none;">${item.icon}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.desc}</div>
+          `;
+        } else {
+          card.innerHTML = `
+            <div class="item-icon">${item.icon}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.desc}</div>
+          `;
+        }
+        
+        itemsGrid.appendChild(card);
+      });
+      
+      document.getElementById('types-view').style.display = 'none';
+      document.getElementById('items-view').style.display = 'block';
+    }
+    
+    loadData();
+  </script>
+</body>
+</html>

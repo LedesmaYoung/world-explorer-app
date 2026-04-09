@@ -2,8 +2,8 @@
 
 > 一款专为 3-6 岁幼儿设计的世界国旗探索游戏，让孩子在游戏中认识世界各国国旗、学习地理知识。
 
-![Version](https://img.shields.io/badge/版本-1.2.0-blue)
-![Target Age](https://img.shields.io/badge/适合年龄-3--6岁-green)
+![Version](https://img.shields.io/badge/版本-2.0.0-blue)
+![Platform](https://img.shields.io/badge/平台-iPad%20(iOS%2026+)-green)
 ![License](https://img.shields.io/badge/协议-MIT-orange)
 
 ## 📖 项目简介
@@ -17,7 +17,7 @@
 - 👨‍👩‍👧‍👦 **亲子互动**：支持双人对战的翻牌配对游戏
 - 🎨 **创作画廊**：涂色作品保存与展示
 - ♻️ **垃圾分类百科**：包含 200+ 种垃圾物品的详细分类信息
-- 📱 **PWA 支持**：可安装到手机桌面，离线可用
+- 📱 **原生 APP**：基于 Capacitor 打包的 iOS 原生应用，完全离线可用
 - 👤 **多用户管理**：支持最多 3 个旅行家档案
 
 ## 🎯 目标用户
@@ -31,8 +31,8 @@
 ```
 world-explorer/
 ├── index.html              # 主页面
-├── manifest.json           # PWA 配置
-├── sw.js                   # Service Worker
+├── capacitor.config.json   # Capacitor 配置
+├── package.json            # npm 配置
 ├── css/                    # 样式文件
 │   ├── style.css          # 主样式
 │   ├── traveler.css       # 旅行家相关样式
@@ -60,67 +60,72 @@ world-explorer/
 │   │   ├── voices/        # 国家中英文发音
 │   │   └── sounds/        # 音效文件
 │   └── icons/             # 图标资源
+├── ios/                    # iOS 原生项目（Capacitor 生成）
+│   └── App/               # Xcode 项目
+├── www/                    # Web 资源目录（Capacitor 构建用）
 ├── docs/                   # 文档目录
 └── pages/                  # 其他页面
 ```
 
 ## 🚀 快速开始
 
-### 方式一：使用启动脚本（推荐）
+### 开发环境要求
 
-项目提供了固定端口的启动脚本，适合局域网内 iPad 等移动设备测试：
+- **Node.js** v18+
+- **Xcode** 26+（仅 macOS）
+- **npm** v9+
 
-```bash
-cd world-explorer
-./start.sh
-```
-
-**固定端口**: `50895`
-
-**访问地址**:
-- 本地访问: `http://localhost:50895`
-- 局域网访问: `http://192.168.31.152:50895`
-
-> 脚本会自动杀死占用端口的旧进程，无需手动清理。
-
-### 方式二：直接打开
+### 本地开发
 
 1. 克隆项目到本地
    ```bash
-   git clone [项目地址]
+   git clone https://github.com/LedesmaYoung/world-explorer-app.git
    cd world-explorer
    ```
 
-2. 使用浏览器打开 `index.html`
+2. 安装依赖
    ```bash
-   # macOS
-   open index.html
-   
-   # Windows
-   start index.html
-   
-   # Linux
-   xdg-open index.html
+   npm install
    ```
 
-### 方式三：PWA 安装
+3. 本地预览（浏览器）
+   ```bash
+   # 使用启动脚本
+   ./start.sh
+   
+   # 或直接打开
+   open www/index.html
+   ```
 
-1. 使用 HTTPS 协议部署项目
-2. 在移动设备浏览器中打开
-3. 点击"添加到主屏幕"即可安装
+### 构建 iOS APP
 
-### 缓存刷新参数
+1. 同步 Web 资源到 iOS 项目
+   ```bash
+   npx cap sync ios
+   ```
 
-PWA 应用支持通过 URL 参数控制缓存行为：
+2. 打开 Xcode
+   ```bash
+   npx cap open ios
+   ```
 
-| 参数 | 作用 | 示例 |
-|------|------|------|
-| `clear-cache=1` | 清除所有缓存并重新加载 | `http://192.168.31.152:50895?clear-cache=1` |
-| `force-cache=1` | 立即开始缓存所有资源（跳过 2 秒延迟） | `http://192.168.31.152:50895?force-cache=1` |
+3. 在 Xcode 中构建并安装到 iPad
+   - 选择开发团队（Signing & Capabilities）
+   - 连接 iPad
+   - 点击运行按钮
 
-**使用场景：**
-- 代码更新后在 iPad 上访问 `?clear-cache=1` 强制清除旧缓存
-- 首次安装后访问 `?force-cache=1` 快速缓存所有资源
+### 常用命令
+
+```bash
+# 同步资源到 iOS
+npx cap sync ios
+
+# 打开 Xcode
+npx cap open ios
+
+# 添加 iOS 平台（首次）
+npx cap add ios
+```
 
 ## 🎮 游戏玩法
 
@@ -264,7 +269,8 @@ PWA 应用支持通过 URL 参数控制缓存行为：
 - **样式**：原生 CSS3 + CSS Variables
 - **存储**：LocalStorage API
 - **语音**：Web Speech API
-- **PWA**：Service Worker + Web App Manifest
+- **原生打包**：Capacitor 8.x
+- **目标平台**：iPad (iOS 26+)
 
 ### 核心模块
 
@@ -375,65 +381,19 @@ VoiceManager.templates.continentIntro(continent)
 ## 🐛 已知问题
 
 - [ ] 部分老旧设备语音合成可能不支持
-- [ ] 某些 Android 设备 PWA 安装提示不明显
 - [ ] 大量音频文件首次加载较慢
 
 ## 🗺️ 开发路线
 
-### 📌 重要转折：从 PWA 到原生 APP
+### v2.0 当前版本（原生 APP 版本）
 
-#### 背景说明
+- [x] Capacitor 项目初始化
+- [x] iOS 平台配置
+- [x] 资源打包测试
+- [x] iPad 安装验证
+- [x] 移除 PWA 相关代码（Service Worker、manifest.json）
 
-项目最初采用 Web/PWA 技术方案，通过 Safari 的"添加到主屏幕"功能在 iPad 上使用，并实现了 Service Worker 缓存机制以支持离线访问。然而，在实际使用中发现缓存机制存在可靠性问题，无法稳定地缓存所有资源（图片、音频等），导致离线体验不佳。
-
-#### 决策结论
-
-经过评估，决定将项目从 Web/PWA 方案转换为原生 APP 方案：
-
-| 项目 | Web/PWA 版本 | 原生 APP 版本 |
-|------|-------------|--------------|
-| 目标平台 | 跨平台浏览器 | iPad (iOS 26+) |
-| 资源加载 | Service Worker 缓存 | 打包在 APP 内 |
-| 离线使用 | 依赖缓存机制，不稳定 | 完全离线可用 |
-| 分发方式 | 网页/主屏幕书签 | Xcode 直接安装 |
-| 开发框架 | 原生 HTML/CSS/JS | Capacitor 打包 |
-
-#### 版本策略
-
-- **Web/PWA 版本**：保留为 `world-explorer-web` 目录，作为历史版本存档
-- **原生 APP 版本**：在当前目录继续开发，使用 Capacitor 框架打包
-
-#### 实施计划
-
-**阶段一：环境准备（前置条件）**
-1. 安装 Xcode - 从 Mac App Store 下载（约 12GB）
-2. 安装 Node.js - 如果尚未安装
-3. 安装 Capacitor CLI - `npm install -g @capacitor/cli`
-
-**阶段二：项目转换**
-1. 创建 Web 版本备份 - 复制当前项目为 `world-explorer-web`
-2. 初始化 Capacitor - 在当前项目添加 Capacitor 配置
-3. 构建 Web 资源 - 调整项目结构适配 Capacitor
-4. 添加 iOS 平台 - 生成 Xcode 项目
-
-**阶段三：原生适配**
-1. 配置 App 信息 - 应用名称、图标、启动画面
-2. 移除 PWA 相关代码 - Service Worker、manifest.json
-3. 测试资源加载 - 确保所有资源正确打包
-
-**阶段四：安装到 iPad**
-1. Xcode 签名配置 - 使用免费 Apple ID
-2. 连接 iPad - 信任开发者证书
-3. 安装并测试
-
-**未来原生功能规划**
-- [ ] 推送通知 - 提醒孩子学习
-- [ ] 本地通知 - 定时提醒
-- [ ] Game Center - 排行榜同步
-
----
-
-### v1.2 当前版本（Web/PWA 最终版本）
+### v1.2 Web/PWA 最终版本
 
 - [x] 垃圾分类游戏（拖拽分类、4 种垃圾类型、200+ 物品）
 - [x] 垃圾分类百科（详细的分类信息、图片展示）
@@ -447,15 +407,11 @@ VoiceManager.templates.continentIntro(continent)
 - [x] 语音反馈增强（随机化鼓励语、连击表扬）
 - [x] 国旗连连看游戏（7级难度、急速榜单、连线特效）
 
-### v2.0 原生 APP 版本（计划中）
-
-- [ ] Capacitor 项目初始化
-- [ ] iOS 平台配置
-- [ ] 资源打包测试
-- [ ] iPad 安装验证
-
 ### v2.1+ 后续功能规划
 
+- [ ] 推送通知 - 提醒孩子学习
+- [ ] 本地通知 - 定时提醒
+- [ ] Game Center - 排行榜同步
 - [ ] 增加国家音频讲解（真人录音）
 - [ ] 增加家长控制面板
 - [ ] 增加城市探索模块

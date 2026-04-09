@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200">
+  <!-- 背景 - 天空 -->
+  <rect fill="#E6F3FF" width="280" height="200"/>
+  <!-- 远山 -->
+  <path fill="#98D8C8" d="M0,180 Q50,160 100,170 Q150,150 200,165 Q250,155 280,165 L280,200 L0,200 Z"/>
+  <!-- 西湖水面 -->
+  <ellipse fill="#5F9EA0" opacity="0.6" cx="140" cy="185" rx="140" ry="30"/>
+  <!-- 断桥 -->
+  <path fill="#FFFFFF" d="M0,160 Q70,155 100,165 Q140,150 180,165 Q210,155 280,160 L280,200 L0,200 Z"/>
+  <path fill="#F0F0F0" d="M90,165 Q140,155 190,165 L190,175 Q140,165 90,175 Z"/>
+  <!-- 桥上亭子 -->
+  <rect fill="#C41E3A" x="125" y="130" width="30" height="30"/>
+  <path fill="#8B0000" d="M115,130 L140,110 L165,130 Z"/>
+  <rect fill="#FFD700" x="135" y="138" width="10" height="15"/>
+  <!-- 雷峰塔 -->
+  <rect fill="#8B7355" x="220" y="100" width="40" height="60"/>
+  <path fill="#8B4513" d="M215,100 L240,70 L265,100 Z"/>
+  <rect fill="#8B7355" x="230" y="105" width="20" height="50"/>
+  <rect fill="#FFE4B5" x="235" y="115" width="10" height="15"/>
+  <!-- 塔尖 -->
+  <polygon fill="#FFD700" points="240,70 245,60 240,65 235,60"/>
+  <!-- 柳树 -->
+  <rect fill="#8B4513" x="15" y="120" width="8" height="60"/>
+  <path fill="#228B22" d="M10,120 Q5,140 15,145 Q25,140 20,120 Q10,135 15,140 Q20,135 15,120"/>
+  <path fill="#228B22" d="M5,130 Q0,150 10,155"/>
+  <path fill="#228B22" d="M25,130 Q30,150 20,155"/>
+  <!-- 荷花 -->
+  <ellipse fill="#FFB6C1" cx="80" cy="175" rx="8" ry="5"/>
+  <ellipse fill="#FFB6C1" cx="200" cy="178" rx="8" ry="5"/>
+  <ellipse fill="#90EE90" cx="75" cy="180" rx="12" ry="6"/>
+  <ellipse fill="#90EE90" cx="205" cy="182" rx="12" ry="6"/>
+  <!-- 云朵 -->
+  <ellipse fill="#FFFFFF" opacity="0.7" cx="50" cy="40" rx="25" ry="12"/>
+  <ellipse fill="#FFFFFF" opacity="0.7" cx="200" cy="35" rx="30" ry="15"/>
+</svg>

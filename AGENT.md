@@ -2,53 +2,63 @@
 
 > 本文档专为 AI 编程助手（如 CodeBuddy、Claude、ChatGPT 等）设计，提供项目开发的完整上下文和规范。
 
-**最后更新：2026-04-07**
+**最后更新：2026-04-09**
 
 ---
 
 ## 🚀 项目运行规范
 
-### 启动方式
+### 开发环境要求
 
-**必须使用项目根目录的启动脚本**：
+- **Node.js** v18+
+- **Xcode** 26+（仅 macOS）
+- **npm** v9+
+
+### 本地开发
 
 ```bash
-cd world-explorer
+# 1. 安装依赖
+npm install
+
+# 2. 本地预览（浏览器）
 ./start.sh
+# 或
+open www/index.html
 ```
 
-### 固定端口
+### 构建 iOS APP
 
-- **端口**: `50895`（固定端口，不得随意更改）
-- **访问地址**: 
-  - 本地访问: `http://localhost:50895`
-  - 局域网访问: `http://192.168.31.152:50895`
+```bash
+# 1. 同步 Web 资源到 iOS 项目
+npx cap sync ios
 
-### 启动脚本说明
+# 2. 打开 Xcode
+npx cap open ios
 
-启动脚本 `start.sh` 会：
-1. 自动杀死占用 50895 端口的旧进程
-2. 启动 Python HTTP 服务器于固定端口 50895
-3. 提供局域网 IP 供移动设备访问
+# 3. 在 Xcode 中构建并安装到 iPad
+# - 选择开发团队（Signing & Capabilities）
+# - 连接 iPad
+# - 点击运行按钮
+```
 
-### 缓存刷新参数
+### 常用命令
 
-PWA 支持通过 URL 参数控制缓存：
+```bash
+# 同步资源到 iOS
+npx cap sync ios
 
-| 参数 | 作用 | 示例 |
-|------|------|------|
-| `clear-cache=1` | 清除所有缓存并重新加载 | `http://192.168.31.152:50895?clear-cache=1` |
-| `force-cache=1` | 立即开始缓存所有资源 | `http://192.168.31.152:50895?force-cache=1` |
+# 打开 Xcode
+npx cap open ios
 
-**使用场景：**
-- 代码更新后在 iPad 上访问 `?clear-cache=1` 强制清除旧缓存
-- 首次安装后访问 `?force-cache=1` 快速缓存所有资源
+# 添加 iOS 平台（首次）
+npx cap add ios
+```
 
 ### 注意事项
 
-- 不要使用其他端口或临时端口
-- 如需重启服务，直接运行 `./start.sh` 即可（脚本会自动处理端口占用）
-- 移动设备测试需确保在同一局域网内
+- 修改 Web 代码后需执行 `npx cap sync ios` 同步到 iOS 项目
+- iOS 项目文件在 `ios/` 目录，由 Capacitor 自动生成
+- Web 资源目录为 `www/`
 
 ---
 
@@ -58,7 +68,7 @@ PWA 支持通过 URL 参数控制缓存：
 小小环球旅行家（World Explorer）
 
 ### 项目类型
-儿童教育类 Web 应用（PWA）
+儿童教育类 iOS 原生应用（基于 Capacitor 打包）
 
 ### 核心功能
 - 世界国旗认知教育
@@ -70,12 +80,15 @@ PWA 支持通过 URL 参数控制缓存：
 ### 目标用户
 3-6 岁幼儿及其家长
 
+### 目标平台
+iPad (iOS 26+)
+
 ### 技术栈
 - 原生 JavaScript（无框架）
 - 原生 CSS3
 - LocalStorage API
 - Web Speech API
-- Service Worker (PWA)
+- Capacitor 8.x（原生打包）
 
 ---
 
@@ -756,50 +769,54 @@ interface GlobalData {
 
 ---
 
-## 📲 PWA 离线部署指南
+## 📲 原生 APP 部署指南
 
-### Service Worker 策略
+### Capacitor 项目结构
 
-项目使用**缓存优先 + 动态缓存**策略：
-
-1. **核心资源**：安装时预先缓存（JS、CSS、HTML）
-2. **动态资源**：首次访问时自动缓存（SVG、音频等）
-3. **缓存更新**：版本号变更时自动清理旧缓存
+```
+world-explorer/
+├── capacitor.config.json   # Capacitor 配置
+├── package.json            # npm 依赖配置
+├── www/                    # Web 资源目录
+│   ├── index.html
+│   ├── css/
+│   ├── js/
+│   ├── assets/
+│   └── data/
+└── ios/                    # iOS 原生项目
+    └── App/
+        └── App.xcodeproj
+```
 
 ### 部署步骤
 
 ```bash
-# 1. 启动本地服务器
-cd world-explorer
-./start.sh
+# 1. 安装依赖
+npm install
 
-# 2. iPad 访问（同一局域网）
-# http://192.168.x.x:50895
+# 2. 同步 Web 资源到 iOS 项目
+npx cap sync ios
 
-# 3. Safari → 分享 → 添加到主屏幕
+# 3. 打开 Xcode
+npx cap open ios
 
-# 4. 首次使用浏览所有功能确保完整缓存
+# 4. 在 Xcode 中配置签名
+# - Signing & Capabilities → 选择开发团队
 
-# 5. 之后可完全离线使用
+# 5. 连接 iPad 并安装
+# - 选择目标设备
+# - 点击运行按钮
 ```
 
-### 打包原生 App（Capacitor）
+### 更新 APP
 
 ```bash
-# 1. 初始化 Capacitor
-npm init -y
-npm install @capacitor/core @capacitor/cli
-npx cap init "小小环球旅行家" com.example.worldexplorer
+# 1. 修改 Web 代码后同步
+npx cap sync ios
 
-# 2. 添加 iOS 平台
-npm install @capacitor/ios
-npx cap add ios
-
-# 3. 同步 Web 资源
-npx cap sync
-
-# 4. 打开 Xcode 打包
-npx cap open ios
+# 2. 在 Xcode 中重新构建
+# Product → Clean Build Folder
+# Product → Run
 ```
 
 ---
@@ -808,7 +825,7 @@ npx cap open ios
 
 ### 仓库地址
 
-**https://github.com/LedesmaYoung/world-explorer**
+**https://github.com/LedesmaYoung/world-explorer-app**
 
 ### 提交规范
 

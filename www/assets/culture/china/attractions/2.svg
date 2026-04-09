@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200">
+  <!-- 背景 - 天空 -->
+  <rect fill="#E6F3FF" width="280" height="200"/>
+  <!-- 故宫围墙 -->
+  <rect fill="#C41E3A" x="0" y="150" width="280" height="50"/>
+  <!-- 金水桥 -->
+  <rect fill="#FFFFFF" x="100" y="160" width="80" height="8" rx="2"/>
+  <rect fill="#FFFFFF" x="90" y="165" width="100" height="5" rx="1"/>
+  <!-- 太和殿基座 -->
+  <rect fill="#FFFFFF" x="80" y="140" width="120" height="20"/>
+  <rect fill="#F5F5F5" x="90" y="135" width="100" height="10"/>
+  <!-- 太和殿主体 -->
+  <rect fill="#FFD700" x="95" y="90" width="90" height="50"/>
+  <!-- 殿顶 -->
+  <path fill="#C41E3A" d="M70,90 L140,50 L210,90 Z"/>
+  <path fill="#8B0000" d="M75,90 L140,55 L205,90 Z"/>
+  <!-- 屋檐装饰 -->
+  <path fill="#FFD700" d="M65,92 L75,90 L70,95 Z"/>
+  <path fill="#FFD700" d="M205,90 L215,92 L210,95 Z"/>
+  <!-- 殿顶装饰 -->
+  <rect fill="#FFD700" x="135" y="42" width="10" height="12"/>
+  <circle fill="#FFD700" cx="140" cy="38" r="8"/>
+  <!-- 柱子 -->
+  <rect fill="#C41E3A" x="105" y="95" width="8" height="40"/>
+  <rect fill="#C41E3A" x="125" y="95" width="8" height="40"/>
+  <rect fill="#C41E3A" x="145" y="95" width="8" height="40"/>
+  <rect fill="#C41E3A" x="165" y="95" width="8" height="40"/>
+  <!-- 门 -->
+  <rect fill="#8B0000" x="125" y="110" width="30" height="30"/>
+  <circle fill="#FFD700" cx="132" cy="125" r="3"/>
+  <circle fill="#FFD700" cx="148" cy="125" r="3"/>
+  <!-- 狮子 -->
+  <ellipse fill="#C41E3A" cx="70" cy="145" rx="12" ry="10"/>
+  <ellipse fill="#C41E3A" cx="210" cy="145" rx="12" ry="10"/>
+  <circle fill="#C41E3A" cx="70" cy="138" r="7"/>
+  <circle fill="#C41E3A" cx="210" cy="138" r="7"/>
+  <!-- 云朵 -->
+  <ellipse fill="#FFFFFF" opacity="0.6" cx="40" cy="30" rx="25" ry="12"/>
+  <ellipse fill="#FFFFFF" opacity="0.6" cx="240" cy="35" rx="30" ry="14"/>
+</svg>

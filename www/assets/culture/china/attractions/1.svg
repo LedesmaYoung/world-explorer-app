@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200">
+  <!-- 背景 - 天空 -->
+  <rect fill="#87CEEB" width="280" height="200"/>
+  <!-- 远山 -->
+  <path fill="#98D8C8" d="M0,180 Q50,140 100,160 Q150,130 200,150 Q250,120 280,140 L280,200 L0,200 Z"/>
+  <!-- 长城主体 -->
+  <path fill="#8B7355" d="M10,170 L30,150 L50,155 L70,145 L90,150 L110,140 L130,145 L150,135 L170,140 L190,130 L210,135 L230,125 L250,130 L270,120 L280,125 L280,200 L10,200 Z"/>
+  <!-- 城墙细节 -->
+  <rect fill="#A0826D" x="25" y="145" width="20" height="15"/>
+  <rect fill="#A0826D" x="65" y="140" width="20" height="15"/>
+  <rect fill="#A0826D" x="105" y="135" width="20" height="15"/>
+  <rect fill="#A0826D" x="145" y="130" width="20" height="15"/>
+  <rect fill="#A0826D" x="185" y="125" width="20" height="15"/>
+  <rect fill="#A0826D" x="225" y="120" width="20" height="15"/>
+  <!-- 城楼 -->
+  <rect fill="#6B4423" x="35" y="135" width="15" height="25"/>
+  <rect fill="#6B4423" x="85" y="130" width="15" height="25"/>
+  <rect fill="#6B4423" x="135" y="125" width="15" height="25"/>
+  <rect fill="#6B4423" x="185" y="120" width="15" height="25"/>
+  <rect fill="#6B4423" x="235" y="115" width="15" height="25"/>
+  <!-- 城楼顶部 -->
+  <path fill="#8B0000" d="M35,135 L42.5,125 L50,135 Z"/>
+  <path fill="#8B0000" d="M85,130 L92.5,120 L100,130 Z"/>
+  <path fill="#8B0000" d="M135,125 L142.5,115 L150,125 Z"/>
+  <path fill="#8B0000" d="M185,120 L192.5,110 L200,120 Z"/>
+  <path fill="#8B0000" d="M235,115 L242.5,105 L250,115 Z"/>
+  <!-- 云朵 -->
+  <ellipse fill="#FFFFFF" opacity="0.8" cx="50" cy="50" rx="30" ry="15"/>
+  <ellipse fill="#FFFFFF" opacity="0.8" cx="230" cy="40" rx="35" ry="18"/>
+</svg>
