@@ -14,7 +14,13 @@
     "type": "git",
     "url": "git+https://github.com/LedesmaYoung/world-explorer-app.git"
   },
-  "keywords": ["kids", "education", "flags", "geography", "game"],
+  "keywords": [
+    "kids",
+    "education",
+    "flags",
+    "geography",
+    "game"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
@@ -27,5 +33,8 @@
     "@capacitor/ios": "^8.3.0",
     "jszip": "^3.10.1",
     "xmldom": "^0.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
   }
 }
