@@ -153,7 +153,6 @@ function renderTravelerList() {
   }
   
   elements.travelerList.innerHTML = travelers.map(traveler => {
-    // 获取该旅行家的进度
     const data = loadGlobalData();
     const save = data.saves[traveler.id] || { countryStamps: {} };
     const collectedCount = Object.keys(save.countryStamps).length;
@@ -165,9 +164,14 @@ function renderTravelerList() {
           <div class="traveler-card-name">${traveler.name}</div>
           <div class="traveler-card-progress">已收集 ${collectedCount} 个国家</div>
         </div>
-        <button class="traveler-card-delete" onclick="event.stopPropagation(); showDeleteConfirm('${traveler.id}', '${traveler.name}')">
-          🗑️
-        </button>
+        <div class="traveler-card-actions">
+          <button class="traveler-card-clear" onclick="event.stopPropagation(); showClearSaveConfirm('${traveler.id}', '${traveler.name}')" title="清空存档">
+            🔄
+          </button>
+          <button class="traveler-card-delete" onclick="event.stopPropagation(); showDeleteConfirm('${traveler.id}', '${traveler.name}')" title="删除旅行家">
+            🗑️
+          </button>
+        </div>
       </div>
     `;
   }).join('');
@@ -302,13 +306,9 @@ function handleDeleteTraveler(travelerId) {
   const result = deleteTraveler(travelerId);
   
   if (result.success) {
-    // 重新渲染旅行家列表
     renderTravelerList();
-    
-    // 更新创建按钮状态
     document.getElementById('create-traveler-btn').disabled = !canCreateTraveler();
     
-    // 如果没有旅行家了，更新提示
     if (getAllTravelers().length === 0) {
       elements.travelerList.innerHTML = `
         <div class="no-traveler-tip">
@@ -317,6 +317,36 @@ function handleDeleteTraveler(travelerId) {
         </div>
       `;
     }
+  }
+}
+
+// 显示清空存档确认弹窗
+function showClearSaveConfirm(travelerId, travelerName) {
+  const modal = document.getElementById('clear-save-modal');
+  const nameSpan = document.getElementById('clear-traveler-name');
+  
+  nameSpan.textContent = travelerName;
+  modal.style.display = 'flex';
+  
+  document.getElementById('clear-cancel-btn').onclick = () => {
+    modal.style.display = 'none';
+  };
+  
+  document.getElementById('clear-confirm-btn').onclick = () => {
+    handleClearSave(travelerId);
+    modal.style.display = 'none';
+  };
+}
+
+// 处理清空存档
+function handleClearSave(travelerId) {
+  const result = clearTravelerSave(travelerId);
+  
+  if (result.success) {
+    renderTravelerList();
+    showToast('存档已清空，可以重新开始冒险了！', 'success');
+  } else {
+    showToast('清空失败：' + result.error, 'error');
   }
 }
 
@@ -329,7 +359,6 @@ function updateTravelerDisplay() {
   const controls = document.querySelector('.header-controls');
   if (!controls) return;
   
-  // 检查是否已有旅行家显示
   let travelerDisplay = controls.querySelector('.current-traveler');
   if (!travelerDisplay) {
     travelerDisplay = document.createElement('div');
@@ -342,77 +371,10 @@ function updateTravelerDisplay() {
     <span class="current-traveler-avatar">${traveler.avatar}</span>
     <span class="current-traveler-name">${traveler.name}</span>
   `;
-  
-  // 添加导入导出按钮（如果还没有）
-  addImportExportButtons(controls);
-}
-
-// 添加导入导出按钮
-function addImportExportButtons(controls) {
-  // 检查是否已存在
-  if (controls.querySelector('.import-export-btns')) return;
-  
-  const btnsContainer = document.createElement('div');
-  btnsContainer.className = 'import-export-btns';
-  btnsContainer.innerHTML = `
-    <button class="import-export-btn" id="export-btn" title="导出存档">
-      📤
-    </button>
-    <button class="import-export-btn" id="import-btn" title="导入存档">
-      📥
-    </button>
-  `;
-  
-  controls.appendChild(btnsContainer);
-  
-  // 绑定事件
-  document.getElementById('export-btn').onclick = handleExport;
-  document.getElementById('import-btn').onclick = handleImport;
-}
-
-// 处理导出
-function handleExport() {
-  audioManager.playSound('tap');
-  
-  try {
-    exportToFile();
-    showToast('存档导出成功！文件已下载', 'success');
-  } catch (err) {
-    showToast('导出失败：' + err.message, 'error');
-  }
-}
-
-// 处理导入
-function handleImport() {
-  audioManager.playSound('tap');
-  
-  // 创建文件选择器
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
-  
-  input.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    try {
-      const result = await importFromFile(file);
-      showToast(`存档导入成功！共 ${result.travelerCount} 位旅行家`, 'success');
-      
-      // 刷新界面
-      updateTravelerDisplay();
-      updateHomeStatus();
-    } catch (err) {
-      showToast('导入失败：' + err.message, 'error');
-    }
-  };
-  
-  input.click();
 }
 
 // 显示提示消息
 function showToast(message, type = 'info') {
-  // 移除已有的 toast
   const existingToast = document.querySelector('.toast-message');
   if (existingToast) {
     existingToast.remove();
@@ -424,10 +386,8 @@ function showToast(message, type = 'info') {
   
   document.body.appendChild(toast);
   
-  // 动画显示
   setTimeout(() => toast.classList.add('show'), 10);
   
-  // 3秒后消失
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => toast.remove(), 300);

@@ -361,14 +361,11 @@ VoiceManager.templates.continentIntro(continent)
 
 ### 支持平台
 
-- ✅ iOS Safari (iOS 12+)
-- ✅ Android Chrome (Android 5+)
-- ✅ 桌面浏览器 (Chrome, Firefox, Safari, Edge)
+- ✅ iPad (iOS 26+)
 
 ### 响应式设计
 
-- 移动优先设计
-- 支持横屏和竖屏
+- 横屏优化
 - 触摸手势优化
 
 ### 性能优化
@@ -376,7 +373,6 @@ VoiceManager.templates.continentIntro(continent)
 - 静态资源懒加载
 - 音频文件按需加载
 - CSS 动画使用 GPU 加速
-- Service Worker 缓存策略
 
 ## 🐛 已知问题
 
@@ -392,8 +388,10 @@ VoiceManager.templates.continentIntro(continent)
 - [x] 资源打包测试
 - [x] iPad 安装验证
 - [x] 移除 PWA 相关代码（Service Worker、manifest.json）
+- [x] 账号/存档系统（多旅行家、独立存档、全局排行榜）
+- [x] 清空存档功能
 
-### v1.2 Web/PWA 最终版本
+### v1.2 Web/PWA 最终版本（已归档）
 
 - [x] 垃圾分类游戏（拖拽分类、4 种垃圾类型、200+ 物品）
 - [x] 垃圾分类百科（详细的分类信息、图片展示）
@@ -437,7 +435,7 @@ MIT License
 
 - 开发团队：CodeBuddy AI + 项目所有者
 - 创建日期：2026-03
-- 最后更新：2026-04-07
+- 最后更新：2026-04-10
 
 ## 🙏 致谢
 

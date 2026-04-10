@@ -110,6 +110,30 @@
   color: #888;
 }
 
+.traveler-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.traveler-card-clear {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(100, 150, 255, 0.15);
+  color: #4A90D9;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.traveler-card-clear:hover {
+  background: rgba(100, 150, 255, 0.3);
+}
+
 .traveler-card-delete {
   width: 36px;
   height: 36px;
@@ -468,36 +492,6 @@
   color: #333;
 }
 
-/* ===== 导入导出按钮 ===== */
-.import-export-btns {
-  display: flex;
-  gap: 8px;
-  margin-left: 10px;
-}
-
-.import-export-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.import-export-btn:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
-}
-
-.import-export-btn:active {
-  transform: scale(0.95);
-}
-
 /* ===== 提示消息 ===== */
 .toast-message {
   position: fixed;
@@ -537,12 +531,6 @@
 }
 
 /* ===== 印章进度显示 ===== */
-.stamp-progress {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  padding: 10px;
-}
 
 .stamp-slot {
   width: 40px;

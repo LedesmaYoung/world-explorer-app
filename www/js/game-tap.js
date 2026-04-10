@@ -450,9 +450,6 @@ const TapGame = {
     // 保存分数到排行榜
     const rank = saveTapGameScore(this.correctCount);
     
-    // 更新游戏统计
-    updateTapGameStats(this.correctCount);
-    
     // 更新结果弹窗
     if (this.elements.challengeScore) {
       this.elements.challengeScore.textContent = this.correctCount;
@@ -483,16 +480,23 @@ const TapGame = {
     const leaderboard = getTapGameLeaderboard();
     const currentTraveler = getCurrentTraveler();
     
-    this.elements.leaderboard.innerHTML = leaderboard.map((entry, index) => `
-      <div class="leaderboard-item ${entry.travelerId === currentTraveler?.id ? 'current' : ''}">
-        <div class="leaderboard-rank">${index + 1}</div>
-        <div class="leaderboard-info">
-          <span class="leaderboard-name">${entry.travelerName}</span>
-          <span class="leaderboard-score">${entry.score} 题</span>
+    this.elements.leaderboard.innerHTML = leaderboard.map((entry, index) => {
+      const isCurrent = (entry.accountId || entry.travelerId) === currentTraveler?.id;
+      const name = entry.name || entry.travelerName;
+      const avatar = entry.avatar || '👤';
+      
+      return `
+        <div class="leaderboard-item ${isCurrent ? 'current' : ''}">
+          <div class="leaderboard-rank">${index + 1}</div>
+          <div class="leaderboard-avatar">${avatar}</div>
+          <div class="leaderboard-info">
+            <span class="leaderboard-name">${name}</span>
+            <span class="leaderboard-score">${entry.score} 题</span>
+          </div>
+          <div class="leaderboard-date">${this.formatDate(entry.date)}</div>
         </div>
-        <div class="leaderboard-date">${this.formatDate(entry.date)}</div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   },
   
   // 格式化日期
