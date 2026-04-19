@@ -26,6 +26,20 @@ npm install
 open www/index.html
 ```
 
+### 从 world-explorer-web 同步更新
+
+本项目是从 world-explorer-web 同步的，主要开发在 Web 项目进行。
+
+```bash
+# 从 Web 项目同步更新
+./sync-from-web.sh
+
+# 脚本会自动：
+# 1. 复制 Web 项目文件到 www/ 目录
+# 2. 排除 PWA 相关文件（manifest.json, sw.js）
+# 3. 执行 npx cap sync ios
+```
+
 ### 构建 iOS APP
 
 ```bash

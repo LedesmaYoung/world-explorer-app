@@ -3,9 +3,10 @@
 // 难度分级配置
 const TAP_DIFFICULTY_LEVELS = [
   { minQuestion: 1, maxQuestion: 5, name: '简单', options: 4, strategy: 'random' },
-  { minQuestion: 6, maxQuestion: 10, name: '中等', options: 5, strategy: 'similar-colors' },
-  { minQuestion: 11, maxQuestion: 20, name: '困难', options: 6, strategy: 'similar-style' },
-  { minQuestion: 21, maxQuestion: 999, name: '地狱', options: 7, strategy: 'similar-both' }
+  { minQuestion: 6, maxQuestion: 10, name: '中等', options: 6, strategy: 'similar-colors' },
+  { minQuestion: 11, maxQuestion: 15, name: '困难', options: 8, strategy: 'similar-style' },
+  { minQuestion: 16, maxQuestion: 20, name: '困难', options: 8, strategy: 'similar-both' },
+  { minQuestion: 21, maxQuestion: 999, name: '地狱', options: 10, strategy: 'similar-both' }
 ];
 
 // 颜色相近的国家组（用于干扰项）
@@ -110,7 +111,7 @@ const TapGame = {
     this.elements.modal.style.display = 'flex';
     
     // 播放语音
-    VoiceManager.speak(`找出${country.name.zh}的国旗！`);
+    VoiceManager.speak(VoiceManager.templates.tapGamePassport(country.name.zh));
     
     return true;
   },
@@ -153,7 +154,7 @@ const TapGame = {
     this.elements.modal.style.display = 'flex';
     
     // 播放语音
-    VoiceManager.speak('天梯挑战开始！看清楚题目，点击正确的国旗！');
+    VoiceManager.speak(VoiceManager.templates.tapGameStart());
     
     return true;
   },
@@ -191,7 +192,7 @@ const TapGame = {
     this.renderFlags();
     
     // 播放语音
-    VoiceManager.speak(`第${this.currentQuestion}题！找出${targetCountry.name.zh}的国旗！`);
+    VoiceManager.speak(VoiceManager.templates.tapGameQuestion(this.currentQuestion, targetCountry.name.zh));
   },
   
   // 获取难度等级
@@ -450,6 +451,9 @@ const TapGame = {
     // 保存分数到排行榜
     const rank = saveTapGameScore(this.correctCount);
     
+    // 更新游戏统计
+    updateTapGameStats(this.correctCount);
+    
     // 更新结果弹窗
     if (this.elements.challengeScore) {
       this.elements.challengeScore.textContent = this.correctCount;
@@ -480,23 +484,16 @@ const TapGame = {
     const leaderboard = getTapGameLeaderboard();
     const currentTraveler = getCurrentTraveler();
     
-    this.elements.leaderboard.innerHTML = leaderboard.map((entry, index) => {
-      const isCurrent = (entry.accountId || entry.travelerId) === currentTraveler?.id;
-      const name = entry.name || entry.travelerName;
-      const avatar = entry.avatar || '👤';
-      
-      return `
-        <div class="leaderboard-item ${isCurrent ? 'current' : ''}">
-          <div class="leaderboard-rank">${index + 1}</div>
-          <div class="leaderboard-avatar">${avatar}</div>
-          <div class="leaderboard-info">
-            <span class="leaderboard-name">${name}</span>
-            <span class="leaderboard-score">${entry.score} 题</span>
-          </div>
-          <div class="leaderboard-date">${this.formatDate(entry.date)}</div>
+    this.elements.leaderboard.innerHTML = leaderboard.map((entry, index) => `
+      <div class="leaderboard-item ${entry.travelerId === currentTraveler?.id ? 'current' : ''}">
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-info">
+          <span class="leaderboard-name">${entry.travelerName}</span>
+          <span class="leaderboard-score">${entry.score} 题</span>
         </div>
-      `;
-    }).join('');
+        <div class="leaderboard-date">${this.formatDate(entry.date)}</div>
+      </div>
+    `).join('');
   },
   
   // 格式化日期

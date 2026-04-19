@@ -93,12 +93,42 @@ const LinkGame = {
   
   // 获取排行榜数据
   getLeaderboard(difficultyIndex) {
-    return getLinkGameLeaderboard(difficultyIndex) || [];
+    const allData = this.loadAllLeaderboards();
+    return allData[difficultyIndex] || [];
+  },
+  
+  // 加载所有排行榜
+  loadAllLeaderboards() {
+    try {
+      const data = localStorage.getItem(this.LEADERBOARD_KEY);
+      return data ? JSON.parse(data) : {};
+    } catch (e) {
+      return {};
+    }
   },
   
   // 保存排行榜
   saveLeaderboard(difficultyIndex, time) {
-    return saveLinkGameTime(difficultyIndex, time);
+    const allData = this.loadAllLeaderboards();
+    if (!allData[difficultyIndex]) {
+      allData[difficultyIndex] = [];
+    }
+    
+    const record = {
+      time: time,
+      date: new Date().toLocaleDateString('zh-CN'),
+      timestamp: Date.now()
+    };
+    
+    allData[difficultyIndex].push(record);
+    // 按用时排序，只保留前10名
+    allData[difficultyIndex].sort((a, b) => a.time - b.time);
+    allData[difficultyIndex] = allData[difficultyIndex].slice(0, 10);
+    
+    localStorage.setItem(this.LEADERBOARD_KEY, JSON.stringify(allData));
+    
+    // 返回排名
+    return allData[difficultyIndex].findIndex(r => r.timestamp === record.timestamp) + 1;
   },
   
   // 格式化时间
@@ -882,23 +912,13 @@ const LinkGame = {
         <div class="result-leaderboard">
           <h3>🏆 ${diff.name}急速榜</h3>
           <div class="leaderboard-list">
-            ${leaderboard.map((r, i) => {
-              const currentTraveler = getCurrentTraveler();
-              const isCurrent = (r.accountId || r.travelerId) === currentTraveler?.id;
-              const name = r.name || r.travelerName || '旅行家';
-              const avatar = r.avatar || '👤';
-              const dateStr = r.date ? new Date(r.date).toLocaleDateString('zh-CN') : r.dateStr || '';
-              
-              return `
-                <div class="leaderboard-item ${isCurrent ? 'current' : ''}">
-                  <span class="rank">${i + 1}</span>
-                  <span class="avatar">${avatar}</span>
-                  <span class="name">${name}</span>
-                  <span class="time">${this.formatTime(r.time)}</span>
-                  <span class="date">${dateStr}</span>
-                </div>
-              `;
-            }).join('')}
+            ${leaderboard.map((r, i) => `
+              <div class="leaderboard-item ${r.time === time ? 'current' : ''}">
+                <span class="rank">${i + 1}</span>
+                <span class="time">${this.formatTime(r.time)}</span>
+                <span class="date">${r.date}</span>
+              </div>
+            `).join('')}
           </div>
         </div>
         

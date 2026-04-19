@@ -6,7 +6,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#FFF9E6">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>小小环球旅行家</title>
+  <!-- <link rel="manifest" href="manifest.json"> -->
   <link rel="stylesheet" href="css/style.css?v=2026032423">
   <link rel="stylesheet" href="css/traveler.css?v=20260324">
   <link rel="stylesheet" href="css/transitions.css?v=20260324">
@@ -83,19 +87,6 @@
         <div class="delete-confirm-buttons">
           <button id="delete-cancel-btn" class="delete-cancel-btn">取消</button>
           <button id="delete-confirm-btn" class="delete-confirm-btn">确定删除</button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- ===== 清空存档确认弹窗 ===== -->
-    <div id="clear-save-modal" class="delete-confirm-modal" style="display: none;">
-      <div class="delete-confirm-content">
-        <div class="delete-confirm-icon">🔄</div>
-        <h3 class="delete-confirm-title">确定要清空存档吗？</h3>
-        <p class="delete-confirm-text"><span id="clear-traveler-name"></span> 的所有进度将被清空，但旅行家会保留！</p>
-        <div class="delete-confirm-buttons">
-          <button id="clear-cancel-btn" class="delete-cancel-btn">取消</button>
-          <button id="clear-confirm-btn" class="delete-confirm-btn">确定清空</button>
         </div>
       </div>
     </div>
@@ -545,6 +536,67 @@
     </div>
   </div>
   
+  <!-- ===== 垃圾分类天梯挑战弹窗 ===== -->
+  <div id="garbage-game-modal" class="garbage-game-modal">
+    <div class="garbage-game-content">
+      <div class="garbage-game-header">
+        <h2 id="garbage-game-title">🏆 垃圾分类天梯挑战</h2>
+        <div id="garbage-game-score" class="garbage-game-score">
+          <span class="score-label">得分：</span>
+          <span class="score-value">0</span>
+          <span class="score-level">第 1 题</span>
+        </div>
+      </div>
+      
+      <!-- 物品显示区域 -->
+      <div id="garbage-item-display" class="garbage-item-display">
+        <!-- 物品动态生成 -->
+      </div>
+      
+      <!-- 4个选项按钮 -->
+      <div id="garbage-options" class="garbage-options">
+        <!-- 选项动态生成 -->
+      </div>
+      
+      <!-- 游戏消息 -->
+      <div id="garbage-game-message" class="garbage-game-message"></div>
+      
+      <button id="garbage-skip-btn" class="garbage-skip-btn" onclick="GarbageGame.quit()">✕ 返回</button>
+    </div>
+    
+    <!-- 天梯挑战结果弹窗 -->
+    <div id="garbage-challenge-modal" class="garbage-challenge-modal">
+      <div class="garbage-challenge-content">
+        <div class="challenge-result-header">
+          <h2>🏆 挑战结束！</h2>
+        </div>
+        
+        <div class="challenge-result-score">
+          <div class="result-score-item">
+            <div class="score-label">答对题数</div>
+            <div id="garbage-challenge-score" class="score-value">0</div>
+          </div>
+          <div class="result-score-item">
+            <div class="score-label">排行榜名次</div>
+            <div id="garbage-challenge-rank" class="score-value rank">-</div>
+          </div>
+        </div>
+        
+        <div class="challenge-leaderboard">
+          <h3>🏆 天梯排行榜</h3>
+          <div id="garbage-leaderboard" class="garbage-leaderboard">
+            <!-- 排行榜动态生成 -->
+          </div>
+        </div>
+        
+        <div class="challenge-actions">
+          <button class="challenge-continue-btn" onclick="GarbageGame.continueChallenge()">继续挑战 🔄</button>
+          <button class="challenge-back-btn" onclick="GarbageGame.backToHome()">返回主页 ↩️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- ===== 涂色创作游戏弹窗 ===== -->
   <div id="coloring-game-modal" class="coloring-game-modal">
     <div class="coloring-game-content">
@@ -714,6 +766,10 @@
   <!-- 第三方库 -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   
+  <!-- 脚本 -->
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  
   <!-- 垃圾分类功能 -->
   <script src="js/garbage-data.js"></script>
   <script src="js/epub-parser.js"></script>
@@ -726,9 +782,317 @@
   <!-- 数据文件（必须在 Service Worker 注册前加载） -->
   <script src="js/data.js"></script>
 
-  <!-- 脚本 -->
-  <script src="js/storage.js"></script>
-  <script src="js/audio.js"></script>
+  <!-- 应用脚本 -->
   <script src="js/app.js"></script>
+
+  <!-- Service Worker 注册 (PWA 离线支持) - 已禁用 -->
+  <!--
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        console.log('[PWA] ========== 开始注册 Service Worker ==========');
+
+        // 检查 URL 参数是否需要强制刷新
+        const urlParams = new URLSearchParams(window.location.search);
+        const forceCache = urlParams.get('force-cache');
+        const clearCache = urlParams.get('clear-cache');
+
+        // 如果请求清除缓存
+        if (clearCache === '1') {
+          console.log('[PWA] 🗑️ 检测到 clear-cache=1 参数，清除所有缓存...');
+          caches.keys().then(names => {
+            names.forEach(name => {
+              console.log(`[PWA] 删除缓存: ${name}`);
+              caches.delete(name);
+            });
+          });
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(reg => reg.unregister());
+          });
+          // 清除参数后重新加载
+          setTimeout(() => {
+            window.location.href = window.location.pathname;
+          }, 500);
+          return;
+        }
+
+        navigator.serviceWorker.register('./sw.js')
+          .then(function(registration) {
+            console.log('[PWA] ✅ Service Worker 注册成功:', registration.scope);
+            console.log('[PWA] 注册状态:', registration.active ? '已激活' : '未激活');
+
+            // 等待 Service Worker 激活后自动缓存所有资源
+            registration.addEventListener('controllerchange', function() {
+              console.log('[PWA] 🔄 Service Worker 已切换，开始缓存所有资源');
+              // 稍等一下再触发缓存，确保 SW 完全激活
+              setTimeout(precacheAllResources, 1000);
+            });
+
+            // 如果已经有控制器，直接开始缓存
+            if (navigator.serviceWorker.controller) {
+              console.log('[PWA] ✅ Service Worker 已就绪，2秒后开始缓存所有资源');
+              // 如果有 force-cache 参数，立即缓存
+              const delay = forceCache === '1' ? 500 : 2000;
+              setTimeout(precacheAllResources, delay);
+            } else {
+              console.log('[PWA] ⚠️ Service Worker Controller 未就绪，等待激活...');
+            }
+
+            // 检查更新
+            registration.addEventListener('updatefound', function() {
+              const newWorker = registration.installing;
+              console.log('[PWA] 🔔 发现新 Service Worker，状态:', newWorker.state);
+
+              newWorker.addEventListener('statechange', function() {
+                console.log('[PWA] Service Worker 状态变化:', newWorker.state);
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('[PWA] 🆕 新版本可用，刷新页面后生效');
+                }
+              });
+            });
+          })
+          .catch(function(error) {
+            console.error('[PWA] ❌ Service Worker 注册失败:', error);
+          });
+      });
+    } else {
+      console.warn('[PWA] ⚠️ 当前浏览器不支持 Service Worker');
+    }
+
+    // 主动缓存所有资源（通过遍历数据文件中引用的资源）
+    function precacheAllResources() {
+      console.log('[PWA] ========== 开始主动缓存所有资源 ==========');
+
+      // 防止重复触发
+      if (window.isCaching) {
+        console.warn('[PWA] ⚠️ 正在缓存中，跳过重复请求');
+        return;
+      }
+      window.isCaching = true;
+
+      // 收集所有需要缓存的资源 URL
+      const urlsToCache = [];
+      const seenUrls = new Set(); // 用于去重
+
+      // 检查数据是否加载
+      console.log('[PWA] 检查数据加载状态:');
+      console.log('[PWA]   COUNTRIES 已加载:', typeof COUNTRIES !== 'undefined');
+      console.log('[PWA]   CULTURE_DATA 已加载:', typeof CULTURE_DATA !== 'undefined');
+
+      // 1. 收集音频资源
+      if (typeof COUNTRIES !== 'undefined') {
+        COUNTRIES.forEach(country => {
+          if (country.audioZh && !seenUrls.has(country.audioZh)) {
+            urlsToCache.push(country.audioZh);
+            seenUrls.add(country.audioZh);
+          }
+          if (country.audioEn && !seenUrls.has(country.audioEn)) {
+            urlsToCache.push(country.audioEn);
+            seenUrls.add(country.audioEn);
+          }
+        });
+      } else {
+        console.error('[PWA] ❌ COUNTRIES 未定义，无法收集音频资源');
+      }
+
+      // 2. 收集文化图片资源
+      if (typeof CULTURE_DATA !== 'undefined') {
+        Object.values(CULTURE_DATA).forEach(countries => {
+          countries.forEach(country => {
+            ['festival', 'food', 'history', 'sports'].forEach(category => {
+              if (country[category]) {
+                country[category].forEach((_, index) => {
+                  const url = `assets/culture/${country.id}/${category}/${index + 1}.svg`;
+                  if (!seenUrls.has(url)) {
+                    urlsToCache.push(url);
+                    seenUrls.add(url);
+                  }
+                });
+              }
+            });
+          });
+        });
+      } else {
+        console.error('[PWA] ❌ CULTURE_DATA 未定义，无法收集文化图片资源');
+      }
+
+      console.log('[PWA] ========== 收集结果 ==========');
+      console.log('[PWA] 总共收集到', urlsToCache.length, '个资源需要缓存（已去重）');
+
+      // 如果没有收集到资源，说明数据未加载，延迟重试
+      if (urlsToCache.length === 0) {
+        console.warn('[PWA] ⚠️ 资源列表为空，数据可能未加载，2秒后重试');
+        window.isCaching = false;
+        setTimeout(precacheAllResources, 2000);
+        return;
+      }
+
+      // 检查 Service Worker 状态
+      console.log('[PWA] Service Worker 状态:');
+      console.log('[PWA]   controller 已存在:', !!navigator.serviceWorker.controller);
+      console.log('[PWA]   ready:', !!navigator.serviceWorker.ready);
+
+      // 批量缓存（每次 50 个，避免一次性请求过多）
+      const batchSize = 50;
+      let cachedCount = 0;
+      let failedCount = 0;
+      const timeouts = []; // 存储所有超时定时器
+      let completedBatches = new Set(); // 记录已完成的批次
+
+      // 完成缓存并清理
+      function finishCaching() {
+        console.log('[PWA] ========== 缓存完成 ==========');
+        console.log('[PWA] ✅ 总计成功缓存:', cachedCount);
+        console.log('[PWA] ❌ 失败:', failedCount);
+        console.log('[PWA] 总资源数:', urlsToCache.length);
+
+        // 清理所有超时定时器
+        timeouts.forEach(timeout => clearTimeout(timeout));
+        timeouts.length = 0;
+
+        showCacheCompleteMessage();
+        window.isCaching = false;
+      }
+
+      function cacheBatch(startIndex) {
+        const batchIndex = Math.floor(startIndex / batchSize);
+
+        // 检查批次是否已完成
+        if (completedBatches.has(batchIndex)) {
+          console.log(`[PWA] 批次 ${batchIndex + 1} 已处理，跳过`);
+          const nextIndex = startIndex + batchSize;
+          if (nextIndex < urlsToCache.length) {
+            cacheBatch(nextIndex);
+          } else {
+            finishCaching();
+          }
+          return;
+        }
+        completedBatches.add(batchIndex);
+
+        const batch = urlsToCache.slice(startIndex, startIndex + batchSize);
+        console.log(`[PWA] ========== 批次 ${batchIndex + 1} ==========`);
+        console.log('[PWA] 正在缓存', batch.length, '个资源，起始索引:', startIndex);
+
+        if (batch.length === 0) {
+          finishCaching();
+          return;
+        }
+
+        const channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+          if (event.data.success) {
+            cachedCount += batch.length;
+            console.log(`[PWA] ✅ 批次 ${batchIndex + 1} 成功，累计: ${cachedCount}/${urlsToCache.length}`);
+            updateCacheProgress(cachedCount, urlsToCache.length);
+            cacheBatch(startIndex + batchSize);
+          } else {
+            failedCount += batch.length;
+            console.error(`[PWA] ❌ 批次 ${batchIndex + 1} 失败:`, event.data.error);
+            // 继续缓存下一批
+            cacheBatch(startIndex + batchSize);
+          }
+        };
+
+        if (navigator.serviceWorker.controller) {
+          console.log('[PWA] 发送缓存请求给 Service Worker');
+          navigator.serviceWorker.controller.postMessage({
+            type: 'CACHE_URLS',
+            urls: batch
+          }, [channel.port2]);
+
+          // 设置超时
+          const timeoutId = setTimeout(() => {
+            console.warn(`[PWA] ⚠️ 批次 ${batchIndex + 1} 超时（10秒无响应）`);
+            failedCount += batch.length;
+            // 继续下一批
+            cacheBatch(startIndex + batchSize);
+          }, 10000);
+          timeouts.push(timeoutId);
+        } else {
+          console.error('[PWA] ❌ Service Worker 未就绪');
+          finishCaching();
+        }
+      }
+
+      // 开始缓存
+      console.log('[PWA] 开始缓存批次...');
+      cacheBatch(0);
+    }
+
+    // 更新缓存进度显示
+    function updateCacheProgress(current, total) {
+      // 可选：在页面显示缓存进度
+      const progress = Math.round((current / total) * 100);
+      console.log(`[PWA] 缓存进度: ${progress}%`);
+    }
+
+    // 显示缓存完成提示
+    function showCacheCompleteMessage() {
+      console.log('[PWA] ✅ 所有资源已缓存完成，可以离线使用了！');
+      // 在页面显示 Toast 提示
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(76, 175, 80, 0.95);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 10000;
+        animation: slideDown 0.3s ease-out;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      `;
+      toast.textContent = '✅ 离线资源缓存完成！可以断网使用了';
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'slideUp 0.3s ease-in';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // 添加调试按钮（仅开发环境）
+    window.addEventListener('load', function() {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        const debugBtn = document.createElement('button');
+        debugBtn.textContent = '🔄 手动触发缓存';
+        debugBtn.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          padding: 10px 15px;
+          background: #2196F3;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          z-index: 10000;
+          font-size: 12px;
+        `;
+        debugBtn.onclick = function() {
+          console.log('[PWA] 🔘 手动触发缓存');
+          precacheAllResources();
+        };
+        document.body.appendChild(debugBtn);
+      }
+    });
+  </script>
+  -->
+
+  <!-- 添加缓存提示动画样式 -->
+  <style>
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+  </style>
 </body>
 </html>
